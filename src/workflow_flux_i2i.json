@@ -1,0 +1,119 @@
+{
+    "1": {
+        "inputs": {
+            "unet_name": "flux1-dev-fp8.safetensors",
+            "weight_dtype": "fp8_e4m3fn"
+        },
+        "class_type": "UNETLoader"
+    },
+    "2": {
+        "inputs": {
+            "clip_name1": "t5xxl_fp8_e4m3fn.safetensors",
+            "clip_name2": "clip_l.safetensors",
+            "type": "flux"
+        },
+        "class_type": "DualCLIPLoader"
+    },
+    "3": {
+        "inputs": {
+            "vae_name": "ae.safetensors"
+        },
+        "class_type": "VAELoader"
+    },
+    "4": {
+        "inputs": {
+            "lora_name": "HMFemme_Flux.safetensors",
+            "strength_model": 1.0,
+            "strength_clip": 1.0,
+            "model": [
+                "1",
+                0
+            ],
+            "clip": [
+                "2",
+                0
+            ]
+        },
+        "class_type": "LoraLoader"
+    },
+    "5": {
+        "inputs": {
+            "clip_l": "{PROMPT} (amateur smartphone camera, candid photo)",
+            "t5xxl": "{PROMPT} (amateur smartphone camera, candid photo)",
+            "guidance": 3.5,
+            "clip": [
+                "4",
+                1
+            ]
+        },
+        "class_type": "CLIPTextEncodeFlux"
+    },
+    "6": {
+        "inputs": {
+            "image": "{INIT_IMAGE}"
+        },
+        "class_type": "LoadImageBase64"
+    },
+    "7": {
+        "inputs": {
+            "pixels": [
+                "6",
+                0
+            ],
+            "vae": [
+                "3",
+                0
+            ]
+        },
+        "class_type": "VAEEncode"
+    },
+    "8": {
+        "inputs": {
+            "seed": "{SEED}",
+            "steps": 25,
+            "cfg": 1.5,
+            "sampler_name": "euler",
+            "scheduler": "simple",
+            "denoise": "{DENOISE}",
+            "model": [
+                "4",
+                0
+            ],
+            "positive": [
+                "5",
+                0
+            ],
+            "negative": [
+                "5",
+                0
+            ],
+            "latent_image": [
+                "7",
+                0
+            ]
+        },
+        "class_type": "KSampler"
+    },
+    "9": {
+        "inputs": {
+            "samples": [
+                "8",
+                0
+            ],
+            "vae": [
+                "3",
+                0
+            ]
+        },
+        "class_type": "VAEDecode"
+    },
+    "10": {
+        "inputs": {
+            "images": [
+                "9",
+                0
+            ]
+        },
+        "class_type": "SaveImageBase64"
+    }
+}

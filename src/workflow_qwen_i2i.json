@@ -1,0 +1,114 @@
+{
+    "1": {
+        "inputs": {
+            "unet_name": "qwen_image_edit_fp8_e4m3fn.safetensors",
+            "weight_dtype": "fp8_e4m3fn"
+        },
+        "class_type": "UNETLoader",
+        "_meta": {
+            "title": "Load Diffusion Model (Qwen Edit)"
+        }
+    },
+    "2": {
+        "inputs": {
+            "clip_name1": "qwen_2.5_vl_7b_fp8_scaled.safetensors",
+            "clip_name2": "t5xxl_fp8_e4m3fn.safetensors",
+            "type": "flux"
+        },
+        "class_type": "DualCLIPLoader",
+        "_meta": {
+            "title": "DualCLIP Loader (Qwen 2.5VL + T5)"
+        }
+    },
+    "3": {
+        "inputs": {
+            "vae_name": "qwen_image_vae.safetensors"
+        },
+        "class_type": "VAELoader",
+        "_meta": {
+            "title": "Load VAE (Qwen)"
+        }
+    },
+    "4": {
+        "inputs": {
+            "image": "INPUT_IMAGE_BASE64",
+            "upload": "image"
+        },
+        "class_type": "ETN_LoadImageBase64",
+        "_meta": {
+            "title": "Load Input Image from Base64"
+        }
+    },
+    "5": {
+        "inputs": {
+            "text": "PROMPT_TEXT",
+            "clip": [
+                "2",
+                0
+            ]
+        },
+        "class_type": "CLIPTextEncode",
+        "_meta": {
+            "title": "Text Prompt"
+        }
+    },
+    "6": {
+        "inputs": {
+            "model": [
+                "1",
+                0
+            ],
+            "vae": [
+                "3",
+                0
+            ],
+            "positive": [
+                "5",
+                0
+            ],
+            "image": [
+                "4",
+                0
+            ],
+            "noise_seed": 12345,
+            "steps": 30,
+            "cfg": 3.5,
+            "sampler_name": "euler",
+            "scheduler": "simple",
+            "denoise": 0.85
+        },
+        "class_type": "KSamplerSelect",
+        "_meta": {
+            "title": "KSampler (Qwen Edit)"
+        }
+    },
+    "7": {
+        "inputs": {
+            "samples": [
+                "6",
+                0
+            ],
+            "vae": [
+                "3",
+                0
+            ]
+        },
+        "class_type": "VAEDecode",
+        "_meta": {
+            "title": "VAE Decode"
+        }
+    },
+    "8": {
+        "inputs": {
+            "images": [
+                "7",
+                0
+            ],
+            "filename_prefix": "qwen_edit"
+        },
+        "class_type": "SaveImage",
+        "_meta": {
+            "title": "Save Image"
+        }
+    }
+}
