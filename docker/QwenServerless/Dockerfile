@@ -1,4 +1,4 @@
-FROM runpod/worker-comfyui:8.1.0-base
+FROM runpod/worker-comfyui:5.7.1-base
 
 # Descargar nodos custom si los hubiera (para Qwen Edit básico no necesitamos nodos extra fuera de los core)
 # RUN comfy-node-install comfyui-kjnodes
